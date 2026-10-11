@@ -86,6 +86,6 @@ saves the final frame; `--no-save` keeps verification runs from writing scores.
 
 ---
 
-Built by **[Abdulrahman M. Yaqyn](https://yaqyn.dev)** through the [Boot.dev](https://www.boot.dev) curriculum.
+Built by **[Abdulrahman M. Yaqyn](https://yaqyn.github.io/folio-static-site/)** through the [Boot.dev](https://www.boot.dev) curriculum.
 
 Best scores retain the legacy `$XDG_STATE_HOME/asteroids/best.json` location (default `~/.local/state/asteroids/best.json`) so existing saves survive the Orbit rename.
