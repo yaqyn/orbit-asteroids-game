@@ -3,13 +3,15 @@
 # Orbit — Asteroids Game
 
 > **Learning Journey Project · Boot.dev**
-> A student project developed through the Boot.dev curriculum and extended through hands-on practice.
+> Developed through the Boot.dev curriculum and extended through independent work.
 
 **A keyboard-controlled arcade game built with Python and Pygame.**
 
 Pilot a wireframe ship through an asteroid field. Rotate, move, and fire at incoming rocks; survive with three lives and brief protection after each hit. Earn points by splitting rocks, with difficulty increasing every 20 seconds. The game uses a 1280 × 720 window and a loop capped at 60 frames per second.
 
-## <img src="readme-assets/run.svg" width="24" height="24" alt=""> Enter the asteroid field
+[Launch the game](#quick-start)
+
+## <img src="readme-assets/icons/launch.svg" width="24" height="24" alt=""> Quick start
 
 Requires **Python 3.13+**, **uv**, and a graphical desktop.
 
@@ -31,27 +33,14 @@ Requires **Python 3.13+**, **uv**, and a graphical desktop.
 
 <sub>Deterministic scene rendered from the project’s sprite classes; a visual preview rather than a recorded gameplay session.</sub>
 
-## <img src="readme-assets/design.svg" width="24" height="24" alt=""> Inside every frame
+## <img src="readme-assets/icons/features.svg" width="24" height="24" alt=""> Features
 
-![Game loop: input, update, collisions, draw](readme-assets/workflow.svg)
+- Control the ship with the keyboard and split incoming asteroids.
+- Pause, restart, and track lives and score.
+- Retain a best score across sessions.
+- Use reduced-motion options or deterministic headless verification.
 
-Sprite groups coordinate updates and drawing. Circle-based collision checks connect shots, asteroids, and the player; asteroid spawning and splitting live in dedicated classes.
-
-| Source | Responsibility |
-| --- | --- |
-| `main.py` | Window, event loop, and launch options |
-| `game.py` | State transitions, lives, scoring, collisions, and persistence |
-| `ui.py` | Shared HUD, menus, starfield, and reduced-motion presentation |
-| `player.py` · `shot.py` | Ship controls and projectiles |
-| `asteroid.py` · `asteroidfield.py` | Rocks, splitting, and spawning |
-| `circleshape.py` | Shared circular shape and collision logic |
-| `constants.py` | Dimensions, movement, and firing settings |
-
-## <img src="readme-assets/learn.svg" width="24" height="24" alt=""> What this project teaches
-
-Object-oriented design, vector movement, delta time, sprite groups, collision detection, state transitions, and resilient score persistence.
-
-## <img src="readme-assets/run.svg" width="24" height="24" alt=""> Gameplay and options
+## <img src="readme-assets/icons/usage.svg" width="24" height="24" alt=""> Usage and options
 
 The launcher uses uv to prepare the Python environment automatically and works
 from another directory when invoked by absolute path. `uv run main.py` remains
@@ -68,10 +57,29 @@ protection. Losing desktop focus pauses the run.
 Reduced motion disables particles and ship blinking; a steady ring still shows
 protection. The best score is saved on game over or exit under
 `$XDG_STATE_HOME/asteroids/best.json` (default `~/.local/state/asteroids/best.json`).
+The legacy save location is retained so existing scores survive the Orbit rename.
 If saving fails, the best remains in memory and the menu shows a message.
 The game has no audio and does not require external media downloads.
 
-## <img src="readme-assets/verify.svg" width="24" height="24" alt=""> Verify without a graphical desktop
+## <img src="readme-assets/icons/architecture.svg" width="24" height="24" alt=""> Architecture
+
+Each frame processes input, updates sprites, resolves collisions, and draws the resulting state.
+
+![Game loop: input, update, collisions, draw](readme-assets/workflow.svg)
+
+Sprite groups coordinate updates and drawing. Circle-based collision checks connect shots, asteroids, and the player; asteroid spawning and splitting live in dedicated classes.
+
+| Source | Responsibility |
+| --- | --- |
+| `main.py` | Window, event loop, and launch options |
+| `game.py` | State transitions, lives, scoring, collisions, and persistence |
+| `ui.py` | Shared HUD, menus, starfield, and reduced-motion presentation |
+| `player.py` · `shot.py` | Ship controls and projectiles |
+| `asteroid.py` · `asteroidfield.py` | Rocks, splitting, and spawning |
+| `circleshape.py` | Shared circular shape and collision logic |
+| `constants.py` | Dimensions, movement, and firing settings |
+
+## <img src="readme-assets/icons/verification.svg" width="24" height="24" alt=""> Verification
 
 ```bash
 uv run python -m unittest -v
@@ -84,8 +92,10 @@ runs the tests and a deterministic headless launch. Optional `--screenshot PATH`
 saves the final frame; `--no-save` keeps verification runs from writing scores.
 [Design context](DESIGN.md) documents the shared presentation and controls.
 
+## <img src="readme-assets/icons/learning.svg" width="24" height="24" alt=""> Learning context
+
+Object-oriented design, vector movement, delta time, sprite groups, collision detection, state transitions, and resilient score persistence.
+
 ---
 
-Built by **[Abdulrahman M. Yaqyn](https://yaqyn.github.io/folio-static-site/)** through the [Boot.dev](https://www.boot.dev) curriculum.
-
-Best scores retain the legacy `$XDG_STATE_HOME/asteroids/best.json` location (default `~/.local/state/asteroids/best.json`) so existing saves survive the Orbit rename.
+Built by **[Abdulrahman M. Yaqyn](https://yaqyn.github.io/folio-static-site/)**.
