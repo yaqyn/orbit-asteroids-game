@@ -2,7 +2,7 @@
 
 # Orbit — Asteroids Game
 
-> **Learning Journey Projects · Boot.dev**
+> **Learning Journey Project · Boot.dev**
 > A student project developed through the Boot.dev curriculum and extended through hands-on practice.
 
 **A keyboard-controlled arcade game built with Python and Pygame.**
@@ -51,7 +51,7 @@ Sprite groups coordinate updates and drawing. Circle-based collision checks conn
 
 Object-oriented design, vector movement, delta time, sprite groups, collision detection, state transitions, and resilient score persistence.
 
-## Gameplay and options
+## <img src="readme-assets/run.svg" width="24" height="24" alt=""> Gameplay and options
 
 The launcher uses uv to prepare the Python environment automatically and works
 from another directory when invoked by absolute path. `uv run main.py` remains
@@ -71,7 +71,7 @@ protection. The best score is saved on game over or exit under
 If saving fails, the best remains in memory and the menu shows a message.
 The game has no audio and does not require external media downloads.
 
-## Verify without a graphical desktop
+## <img src="readme-assets/verify.svg" width="24" height="24" alt=""> Verify without a graphical desktop
 
 ```bash
 uv run python -m unittest -v
