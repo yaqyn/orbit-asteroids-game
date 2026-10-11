@@ -17,6 +17,8 @@ Pilot a wireframe ship through an asteroid field. Rotate, move, and fire at inco
 
 ## <img src="readme-assets/icons/installation.svg" width="24" height="24" alt=""> Installation
 
+Clone with `git clone https://github.com/yaqyn/orbit-asteroids-game.git`, then run the commands below from `orbit-asteroids-game/`.
+
 Requires **Python 3.13+**, **uv**, and a graphical desktop.
 
 The launcher prepares the Python environment with uv automatically.
