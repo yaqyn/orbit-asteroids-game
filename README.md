@@ -11,9 +11,20 @@ Pilot a wireframe ship through an asteroid field. Rotate, move, and fire at inco
 
 [Launch the game](#-quick-start)
 
-## <img src="readme-assets/icons/launch.svg" width="24" height="24" alt=""> Quick start
+## <img src="readme-assets/icons/features.svg" width="24" height="24" alt=""> Features
+
+- Control the ship with the keyboard and split incoming asteroids.
+- Pause, restart, and track lives and score.
+- Retain a best score across sessions.
+- Use reduced-motion options or deterministic headless verification.
+
+## <img src="readme-assets/icons/installation.svg" width="24" height="24" alt=""> Installation
 
 Requires **Python 3.13+**, **uv**, and a graphical desktop.
+
+The launcher prepares the Python environment with uv automatically.
+
+## <img src="readme-assets/icons/launch.svg" width="24" height="24" alt=""> Quick start
 
 ```bash
 ./launch
@@ -32,13 +43,6 @@ Requires **Python 3.13+**, **uv**, and a graphical desktop.
 ![Rendered gameplay preview using the project's current game and renderer](readme-assets/gameplay.png)
 
 <sub>Deterministic scene rendered from the project’s sprite classes; a visual preview rather than a recorded gameplay session.</sub>
-
-## <img src="readme-assets/icons/features.svg" width="24" height="24" alt=""> Features
-
-- Control the ship with the keyboard and split incoming asteroids.
-- Pause, restart, and track lives and score.
-- Retain a best score across sessions.
-- Use reduced-motion options or deterministic headless verification.
 
 ## <img src="readme-assets/icons/usage.svg" width="24" height="24" alt=""> Usage and options
 
