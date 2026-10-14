@@ -105,13 +105,22 @@ class GameTests(unittest.TestCase):
         self.game.save_path.write_text("[]")
         self.assertEqual(Game(self.game.save_path).best, 0)
         self.game.score = 10
-        with patch.object(Path, "write_text", side_effect=OSError("read-only")):
+        with patch("game.tempfile.NamedTemporaryFile", side_effect=OSError("read-only")):
             self.game.save_best()
         self.assertTrue(self.game.save_error)
         self.assertEqual(self.game.best, 10)
         self.game.save_best()
         self.assertFalse(self.game.save_error)
         self.assertEqual(Game(self.game.save_path).best, 10)
+
+    def test_failed_score_replace_preserves_save_and_cleans_temporary(self):
+        self.game.save_path.write_text('{"best": 5}')
+        self.game.score = 10
+        with patch.object(Path, "replace", side_effect=OSError("blocked")):
+            self.game.save_best()
+        self.assertTrue(self.game.save_error)
+        self.assertEqual(self.game.save_path.read_text(), '{"best": 5}')
+        self.assertEqual(list(self.game.save_path.parent.iterdir()), [self.game.save_path])
 
     def test_render_all_states(self):
         renderer = Renderer()

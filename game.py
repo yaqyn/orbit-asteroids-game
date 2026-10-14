@@ -3,6 +3,7 @@
 import json
 import os
 import random
+import tempfile
 from pathlib import Path
 
 import pygame
@@ -43,15 +44,25 @@ class Game:
         self.best = max(self.best, self.score)
         if not self.save_scores or self.best <= self.persisted_best:
             return
-        temporary = self.save_path.with_suffix(".tmp")
+        temporary = None
         try:
             self.save_path.parent.mkdir(parents=True, exist_ok=True)
-            temporary.write_text(json.dumps({"best": self.best}), encoding="utf-8")
+            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8",
+                                             dir=self.save_path.parent,
+                                             prefix=f".{self.save_path.name}.", delete=False) as file:
+                temporary = Path(file.name)
+                json.dump({"best": self.best}, file)
             temporary.replace(self.save_path)
             self.save_error = False
             self.persisted_best = self.best
         except OSError:
             self.save_error = True
+        finally:
+            if temporary is not None:
+                try:
+                    temporary.unlink(missing_ok=True)
+                except OSError:
+                    self.save_error = True
 
     def reset(self):
         self.asteroids, self.shots = pygame.sprite.Group(), pygame.sprite.Group()

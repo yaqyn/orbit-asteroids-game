@@ -61,7 +61,7 @@ Reduced motion disables particles and ship blinking; a steady ring still shows
 protection. The best score is saved on game over or exit under
 `$XDG_STATE_HOME/asteroids/best.json` (default `~/.local/state/asteroids/best.json`).
 The legacy save location is retained so existing scores survive the Orbit rename.
-If saving fails, the best remains in memory and the menu shows a message.
+Score saves use unique temporary files and atomic replacement; a failed replacement preserves the previous score and cleans up its temporary file. If saving fails, the best remains in memory and the menu shows a message.
 The game has no audio and does not require external media downloads.
 
 ## <img src="readme-assets/icons/architecture.svg" width="24" height="24" alt=""> Architecture
