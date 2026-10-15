@@ -9,12 +9,17 @@ from unittest.mock import patch
 import pygame
 from asteroid import Asteroid
 from shot import Shot
-from game import Game
+from game import Game, score_path
 from ui import Renderer
 from constants import SCREEN_WIDTH
 
 
 class GameTests(unittest.TestCase):
+    def test_empty_state_home_uses_home_directory(self):
+        home = Path(tempfile.gettempdir()) / "asteroids-test-home"
+        with patch.dict(os.environ, {"XDG_STATE_HOME": ""}), patch.object(Path, "home", return_value=home):
+            self.assertEqual(score_path(), home / ".local/state/asteroids/best.json")
+
     def setUp(self):
         pygame.display.init()
         pygame.font.init()
