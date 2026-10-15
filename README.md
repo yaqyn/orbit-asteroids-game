@@ -4,24 +4,31 @@
 
 **A keyboard-controlled arcade game built with Python and Pygame.**
 
-Pilot a wireframe ship through an asteroid field. Rotate, move, and fire at incoming rocks; survive with three lives and brief protection after each hit. Earn points by splitting rocks, with difficulty increasing every 20 seconds. The game uses a 1280 × 720 window and a loop capped at 60 frames per second.
+Pilot an upgradeable starfighter through rotating, shaded asteroids. Fly with momentum, boost through a layered starfield, and leave twin cyan engine trails. Collect salvage to choose new modules, recharge shields between impacts, and chain kills for bonus points. The game uses a 1280 × 720 Pygame window capped at 60 frames per second.
 
 [Launch the game](#-quick-start)
 
 ## <img src="readme-assets/icons/features.svg" width="24" height="24" alt=""> Features
 
-- Control the ship with the keyboard and split incoming asteroids.
-- Pause, restart, and track lives and score.
-- Retain a best score across sessions.
-- Use reduced-motion options or deterministic headless verification.
+- Rotating 3D rock meshes, lit coral faces, violet shadows, and impact particles.
+- Flight-reactive star parallax, boost streaks, and twin cyan exhaust trails.
+- Inertial flight, rechargeable boost energy, shields, and three hull lives.
+- Salvage XP, pilot ranks, and six module types with keyboard upgrade choices.
+- Kill-chain multipliers, escalating contracts, telemetry, and a local radar.
+- Pause, restart, persistent best score, and reduced-motion mode.
 
 ## <img src="readme-assets/icons/installation.svg" width="24" height="24" alt=""> Installation
 
-Clone with `git clone https://github.com/yaqyn/orbit-asteroids-game.git`, then run the commands below from `orbit-asteroids-game/`.
+Requires a **Linux or macOS graphical desktop**, Bash, and `curl` or `wget`.
+The first launch needs internet access. Python and uv do not need to be installed
+in advance: the launcher downloads uv into the ignored `.tools/` directory when
+needed, then uv prepares Python 3.13 and the locked Pygame dependency in `.venv/`.
+An existing uv installation is reused. No sudo or shell-profile changes are needed.
 
-Requires **Python 3.13+**, **uv**, and a graphical desktop.
-
-The launcher prepares the Python environment with uv automatically.
+```bash
+git clone https://github.com/yaqyn/orbit-asteroids-game.git
+cd orbit-asteroids-game
+```
 
 ## <img src="readme-assets/icons/launch.svg" width="24" height="24" alt=""> Quick start
 
@@ -29,13 +36,20 @@ The launcher prepares the Python environment with uv automatically.
 ./launch
 ```
 
+Wait for first-run setup to finish, then press **Enter** on the Orbit title screen.
+Subsequent launches reuse the environment. Press **F11** for fullscreen and
+**Escape** to quit.
+
 | Key | Action |
 | --- | --- |
-| **W / S** or **Up / Down** | Move forward / backward |
+| **W / S** or **Up / Down** | Thrust forward / backward |
 | **A / D** or **Left / Right** | Rotate left / right |
 | **Space** | Shoot |
+| **Shift** + thrust | Boost using ion charge |
+| **1 / 2 / 3** | Install a module on the rank-up screen |
 | **Enter** | Start, resume, or play again |
 | **P** | Pause / resume |
+| **F11** | Toggle fullscreen |
 | **R** | Restart after game over |
 | **Escape** or close window | Exit |
 
@@ -45,20 +59,36 @@ The launcher prepares the Python environment with uv automatically.
 
 ## <img src="readme-assets/icons/usage.svg" width="24" height="24" alt=""> Usage and options
 
-The launcher uses uv to prepare the Python environment automatically and works
+The launcher installs the locked environment automatically and works
 from another directory when invoked by absolute path. `uv run main.py` remains
-available. The ship wraps around screen edges; shots expire after 1.6 seconds,
+available if uv is on your PATH. The window is resizable; fullscreen uses the native desktop resolution. A
+1280 × 720 game canvas scales to fit while preserving its aspect ratio, with black
+bars where needed. F11 switches modes without resetting the run.
+
+The ship wraps around screen edges; shots expire after 1.6 seconds,
 and off-screen rocks are removed. Small rocks score 100 points, medium rocks 50,
-and large rocks 20. Each hit removes one life; respawns grant two seconds of
-protection. Losing desktop focus pauses the run.
+and large rocks 20. Shields absorb 25 points per impact; an unshielded hit removes one
+life. Shields recharge at 5 points per second after six seconds without impact.
+Respawns stop the ship and grant two seconds of protection. Losing desktop focus pauses the run.
+
+Collect mint salvage diamonds before they expire after 14 seconds. The tractor
+pulls nearby salvage toward the ship. Each rank offers up to three modules while
+combat is frozen: reduce cannon delay, improve thrust, expand shields, extend the
+tractor range, unlock triple shots, or restore hull and shields. Press the number
+shown to install a module. **Modules and ranks last for the current run.**
+
+Every five kills in a chain adds 0.25 to the score multiplier, up to ×2; three
+seconds without a kill or taking damage clears the chain. Contracts reward
+500 score and 8 XP at increasing kill targets. Boost drains ion charge; release
+Shift after exhaustion to rearm it. Charge regenerates when not boosting.
 
 ```bash
 ./launch --fullscreen
 ./launch --reduced-motion
 ```
 
-Reduced motion disables particles and ship blinking; a steady ring still shows
-protection. The best score is saved on game over or exit under
+Reduced motion disables particles, star parallax/twinkle/streaks, and asteroid
+rotation; a steady ring still shows protection. The best score is saved on game over or exit under
 `$XDG_STATE_HOME/asteroids/best.json` (default `~/.local/state/asteroids/best.json`).
 The legacy save location is retained so existing scores survive the Orbit rename.
 Score saves use unique temporary files and atomic replacement; a failed replacement preserves the previous score and cleans up its temporary file. If saving fails, the best remains in memory and the menu shows a message.
@@ -74,8 +104,10 @@ Sprite groups coordinate updates and drawing. Circle-based collision checks conn
 
 | Source | Responsibility |
 | --- | --- |
-| `main.py` | Window, event loop, and launch options |
-| `game.py` | State transitions, lives, scoring, collisions, and persistence |
+| `main.py` | Event loop and launch options |
+| `display.py` | Native fullscreen, resizing, canvas scaling, and presentation |
+| `game.py` | State transitions, shields, contracts, ranks, scoring, and persistence |
+| `progression.py` | Salvage attraction and upgrade definitions |
 | `ui.py` | Shared HUD, menus, starfield, and reduced-motion presentation |
 | `player.py` · `shot.py` | Ship controls and projectiles |
 | `asteroid.py` · `asteroidfield.py` | Rocks, splitting, and spawning |
@@ -89,15 +121,31 @@ uv run python -m unittest -v
 SDL_VIDEODRIVER=dummy ./launch --start --seed 7 --frames 120 --no-save
 ```
 
-Tests cover scoring, splitting, lives, invulnerability, pause/restart, focus loss,
-object cleanup, score-save recovery, and rendering every screen. GitHub Actions
+Tests cover scoring, splitting, shields, boost/drag, salvage, rank-up freezing,
+module installation/caps, contracts, particle limits, reduced-motion spawn parity,
+pause/restart, cleanup, score-save recovery, and rendering every screen. GitHub Actions
 runs the tests and a deterministic headless launch. Optional `--screenshot PATH`
 saves the final frame; `--no-save` keeps verification runs from writing scores.
+For a reproducible CPU renderer stress test (80 rocks, 240 frames, no combat,
+frame limiter, or display presentation):
+
+```bash
+uv run benchmark.py --headless
+```
+
+The report includes average and 95th-percentile render times in milliseconds.
+Results depend on the machine; they measure rendering rather than end-to-end FPS.
+Asteroid rasters are cached between small rotation changes, small rocks use fewer
+facets, and text/overlay caches avoid repeated allocations.
+
 [Design context](DESIGN.md) documents the shared presentation and controls.
 
 ## <img src="readme-assets/icons/learning.svg" width="24" height="24" alt=""> Learning context
 
-Object-oriented design, vector movement, delta time, sprite groups, collision detection, state transitions, and resilient score persistence.
+The course foundation covers object-oriented design, vector movement, sprite
+groups, and collision detection. Extensions add 3D mesh projection and lighting,
+render caching, fullscreen presentation, inertial flight, run-local progression,
+and resilient score persistence.
 
 ---
 

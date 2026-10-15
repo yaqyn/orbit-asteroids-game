@@ -16,8 +16,13 @@ PLAYER_SHOOT_COOLDOWN_SECONDS = 0.18
 PLAYER_LIVES = 3
 RESPAWN_SECONDS = 2.0
 SHOT_LIFETIME_SECONDS = 1.6
-BACKGROUND = "#101327"
-FOREGROUND = "#eef3e8"
-ACCENT = "#83efd0"
+BACKGROUND = "#101729"
+FOREGROUND = "#f6e8c8"
+ACCENT = "#99ead0"
 DANGER = "#f18c83"
 MUTED = "#a4adc5"
+
+# Cover artwork: ink, ivory, mint, coral, and violet stone.
+CYAN = "#65d9ff"
+STONE = "#756489"
+PANEL = "#141b30"

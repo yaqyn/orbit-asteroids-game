@@ -1,8 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 project_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-if ! command -v uv >/dev/null 2>&1; then
-    printf '%s\n' 'Error: uv is required. Install it from https://docs.astral.sh/uv/.' >&2
-    exit 127
+local_uv="$project_dir/.tools/uv"
+
+if command -v uv >/dev/null 2>&1; then
+    uv_bin="$(command -v uv)"
+elif [[ -x "$local_uv" ]]; then
+    uv_bin="$local_uv"
+else
+    printf '%s\n' 'Preparing Orbit: downloading uv into .tools/ (no shell-profile changes).'
+    installer="$(mktemp)"
+    trap 'rm -f -- "$installer"' EXIT
+    if command -v curl >/dev/null 2>&1; then
+        curl --fail --location --silent --show-error https://astral.sh/uv/install.sh --output "$installer"
+    elif command -v wget >/dev/null 2>&1; then
+        wget --quiet https://astral.sh/uv/install.sh --output-document="$installer"
+    else
+        printf '%s\n' 'Error: install curl or wget, then run ./launch again.' >&2
+        exit 127
+    fi
+    UV_UNMANAGED_INSTALL="$project_dir/.tools" sh "$installer"
+    rm -f -- "$installer"
+    trap - EXIT
+    uv_bin="$local_uv"
 fi
-exec uv run --project "$project_dir" python "$project_dir/main.py" "$@"
+
+# uv downloads Python if needed and installs exactly the locked dependencies.
+exec "$uv_bin" run --locked --project "$project_dir" python "$project_dir/main.py" "$@"

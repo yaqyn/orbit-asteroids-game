@@ -11,6 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
+      - run: bash -n launch
       - run: uv sync --locked
       - run: uv run python -m unittest -v
       - run: ./launch --start --seed 7 --frames 120 --no-save
+      - run: ./launch --fullscreen --start --reduced-motion --frames 60 --no-save

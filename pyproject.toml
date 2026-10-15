@@ -1,7 +1,7 @@
 [project]
 name = "orbit-asteroids-game"
 version = "0.1.0"
-description = "A keyboard-first Orbit arcade game with lives, scores, and restart"
+description = "A space-survival arcade game with 3D-shaded asteroids and run-local ship upgrades"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
