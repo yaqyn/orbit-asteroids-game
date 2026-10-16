@@ -17,6 +17,17 @@ from ui import Renderer
 
 
 class GameTests(unittest.TestCase):
+    def test_rank_after_all_upgrades_are_capped_keeps_playing(self):
+        from game import UPGRADES
+        game = Game(save_scores=False)
+        game.reset()
+        game.modules = {key: cap for key, (_, _, cap) in UPGRADES.items()}
+        game.xp = game.next_rank
+        game.check_rank()
+        self.assertEqual(game.state, "playing")
+        self.assertEqual(game.rank, 2)
+        self.assertEqual(game.upgrade_choices, [])
+
     def test_empty_state_home_uses_home_directory(self):
         home = Path(tempfile.gettempdir()) / "asteroids-test-home"
         with (

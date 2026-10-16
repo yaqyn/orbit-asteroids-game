@@ -271,6 +271,8 @@ class Game:
         available = [
             key for key, (_, _, cap) in UPGRADES.items() if self.modules[key] < cap
         ]
+        if not available:
+            return
         # Stable rotation offers variety without consuming the spawn RNG.
         offset = (self.rank - 2) % len(available)
         self.upgrade_choices = (available[offset:] + available[:offset])[:3]
