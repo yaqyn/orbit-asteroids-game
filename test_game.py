@@ -17,6 +17,16 @@ from ui import Renderer
 
 
 class GameTests(unittest.TestCase):
+    def test_expired_salvage_cannot_award_xp_at_the_ship(self):
+        from progression import Salvage
+        pickup = Salvage(self.game.player.position, pygame.Vector2(), 3)
+        pickup.life = 0.01
+        self.game.salvage.append(pickup)
+        self.game.update(0.02)
+        self.assertEqual(self.game.xp, 0)
+        self.assertEqual(self.game.collected, 0)
+        self.assertEqual(self.game.salvage, [])
+
     def test_rank_after_all_upgrades_are_capped_keeps_playing(self):
         from game import UPGRADES
         game = Game(save_scores=False)

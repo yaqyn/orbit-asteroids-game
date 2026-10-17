@@ -24,10 +24,12 @@ class Salvage:
         self.life = 14.0
 
     def update(self, dt, player, radius):
+        self.life -= dt
+        if self.life <= 0:
+            return False
         delta = player.position - self.position
         if 0 < delta.length() < radius:
             self.velocity += delta.normalize() * 1100 * dt
         self.velocity *= 0.96 ** (dt * 60)
         self.position += self.velocity * dt
-        self.life -= dt
         return delta.length() < player.radius + 9
