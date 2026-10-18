@@ -50,7 +50,7 @@ Subsequent launches reuse the environment. Press **F11** for fullscreen and
 | **Enter** | Start, resume, or play again |
 | **P** | Pause / resume |
 | **F11** | Toggle fullscreen |
-| **R** | Restart after game over |
+| **R** | Restart while paused or after game over |
 | **Escape** or close window | Exit |
 
 ![Rendered gameplay preview using the project's current game and renderer](readme-assets/gameplay.png)

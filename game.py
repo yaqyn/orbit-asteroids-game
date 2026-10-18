@@ -124,6 +124,9 @@ class Game:
                 if index < len(self.upgrade_choices):
                     self.apply_upgrade(self.upgrade_choices[index])
             return True
+        if event.key == pygame.K_r and self.state == "paused":
+            self.reset()
+            return True
         if event.key in {pygame.K_RETURN, pygame.K_r} and self.state in {
             "title",
             "game_over",
