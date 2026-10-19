@@ -50,6 +50,7 @@ Subsequent launches reuse the environment. Press **F11** for fullscreen and
 | **Enter** | Start, resume, or play again |
 | **P** | Pause / resume |
 | **F11** | Toggle fullscreen |
+| **M** | Toggle reduced motion |
 | **R** | Restart while paused or after game over |
 | **Escape** or close window | Exit |
 

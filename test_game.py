@@ -140,6 +140,14 @@ class GameTests(unittest.TestCase):
         self.game.burst(pygame.Vector2(100, 100))
         self.assertEqual(self.game.particles, [])
 
+    def test_reduced_motion_can_be_toggled_during_play(self):
+        self.game.particles.append([pygame.Vector2(), pygame.Vector2(), 1])
+        asteroid = Asteroid(100, 100, 20)
+        self.game.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_m))
+        self.assertTrue(self.game.reduced_motion)
+        self.assertEqual(self.game.particles, [])
+        self.assertTrue(asteroid.reduced_motion)
+
     def test_corrupt_score_and_write_failure(self):
         self.game.save_path.write_text("[]")
         self.assertEqual(Game(self.game.save_path).best, 0)

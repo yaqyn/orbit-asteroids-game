@@ -118,6 +118,9 @@ class Game:
         if event.key == pygame.K_ESCAPE:
             self.save_best()
             return False
+        if event.key == pygame.K_m:
+            self.toggle_reduced_motion()
+            return True
         if self.state == "upgrade":
             if event.key in (pygame.K_1, pygame.K_2, pygame.K_3):
                 index = event.key - pygame.K_1
@@ -138,6 +141,13 @@ class Game:
         }:
             self.state = "paused" if self.state == "playing" else "playing"
         return True
+
+    def toggle_reduced_motion(self):
+        self.reduced_motion = not self.reduced_motion
+        if self.reduced_motion:
+            self.particles.clear()
+        for rock in self.asteroids:
+            rock.reduced_motion = self.reduced_motion
 
     def burst(self, position, count=18):
         if self.reduced_motion:
