@@ -147,6 +147,9 @@ class GameTests(unittest.TestCase):
         self.assertTrue(self.game.reduced_motion)
         self.assertEqual(self.game.particles, [])
         self.assertTrue(asteroid.reduced_motion)
+        self.assertEqual(self.game.notice, "Reduced motion on")
+        self.game.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_m))
+        self.assertEqual(self.game.notice, "Reduced motion off")
 
     def test_corrupt_score_and_write_failure(self):
         self.game.save_path.write_text("[]")

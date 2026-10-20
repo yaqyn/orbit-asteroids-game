@@ -148,6 +148,8 @@ class Game:
             self.particles.clear()
         for rock in self.asteroids:
             rock.reduced_motion = self.reduced_motion
+        state = "on" if self.reduced_motion else "off"
+        self.notice, self.notice_timer = f"Reduced motion {state}", 2.5
 
     def burst(self, position, count=18):
         if self.reduced_motion:
