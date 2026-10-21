@@ -39,6 +39,9 @@ def main(argv=None):
     parser.add_argument(
         "--no-save", action="store_true", help="Keep best scores in memory only"
     )
+    parser.add_argument(
+        "--score-file", type=Path, help="Use a custom best-score file"
+    )
     args = parser.parse_args(argv)
     if args.seed is not None:
         random.seed(args.seed)
@@ -49,7 +52,11 @@ def main(argv=None):
         screen = display.canvas
         pygame.display.set_caption("Orbit | Dodge / Split / Evolve")
         clock = pygame.time.Clock()
-        game = Game(reduced_motion=args.reduced_motion, save_scores=not args.no_save)
+        game = Game(
+            save_path=args.score_file,
+            reduced_motion=args.reduced_motion,
+            save_scores=not args.no_save,
+        )
         if args.start:
             game.reset()
         renderer = Renderer()

@@ -1,4 +1,5 @@
 import os
+import json
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
@@ -14,6 +15,7 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
+from main import main
 
 
 class GameTests(unittest.TestCase):
@@ -45,6 +47,13 @@ class GameTests(unittest.TestCase):
             patch.object(Path, "home", return_value=home),
         ):
             self.assertEqual(score_path(), home / ".local/state/asteroids/best.json")
+
+    def test_custom_score_file_keeps_runs_portable(self):
+        score = Path(self.temp.name) / "portable" / "best.json"
+        score.parent.mkdir()
+        score.write_text('{"best": 17}')
+        self.assertEqual(main(["--start", "--frames", "1", "--score-file", str(score)]), 0)
+        self.assertEqual(json.loads(score.read_text()), {"best": 17})
 
     def setUp(self):
         pygame.display.init()
