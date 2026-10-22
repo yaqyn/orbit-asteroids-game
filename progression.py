@@ -32,4 +32,4 @@ class Salvage:
             self.velocity += delta.normalize() * 1100 * dt
         self.velocity *= 0.96 ** (dt * 60)
         self.position += self.velocity * dt
-        return delta.length() < player.radius + 9
+        return self.position.distance_to(player.position) < player.radius + 9

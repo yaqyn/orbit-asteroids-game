@@ -19,6 +19,12 @@ from main import main
 
 
 class GameTests(unittest.TestCase):
+    def test_moving_salvage_is_collected_on_the_frame_it_reaches_the_ship(self):
+        from progression import Salvage
+
+        pickup = Salvage(self.game.player.position + pygame.Vector2(40, 0), (-1000, 0), 3)
+        self.assertTrue(pickup.update(0.2, self.game.player, 0))
+
     def test_expired_salvage_cannot_award_xp_at_the_ship(self):
         from progression import Salvage
         pickup = Salvage(self.game.player.position, pygame.Vector2(), 3)
