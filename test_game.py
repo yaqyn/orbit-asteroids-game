@@ -191,6 +191,13 @@ class GameTests(unittest.TestCase):
             list(self.game.save_path.parent.iterdir()), [self.game.save_path]
         )
 
+    def test_score_updates_preserve_existing_file_permissions(self):
+        self.game.save_path.write_text('{"best": 5}')
+        self.game.save_path.chmod(0o640)
+        self.game.score = 10
+        self.game.save_best()
+        self.assertEqual(self.game.save_path.stat().st_mode & 0o777, 0o640)
+
     def test_render_all_states(self):
         renderer = Renderer()
         screen = pygame.display.get_surface()

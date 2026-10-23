@@ -3,6 +3,7 @@
 import json
 import os
 import random
+import stat
 import tempfile
 from pathlib import Path
 
@@ -49,6 +50,11 @@ class Game:
         temporary = None
         try:
             self.save_path.parent.mkdir(parents=True, exist_ok=True)
+            existing_mode = None
+            try:
+                existing_mode = stat.S_IMODE(self.save_path.stat().st_mode)
+            except FileNotFoundError:
+                pass
             with tempfile.NamedTemporaryFile(
                 mode="w",
                 encoding="utf-8",
@@ -58,6 +64,8 @@ class Game:
             ) as file:
                 temporary = Path(file.name)
                 json.dump({"best": self.best}, file)
+            if existing_mode is not None:
+                temporary.chmod(existing_mode)
             temporary.replace(self.save_path)
             self.save_error = False
             self.persisted_best = self.best
