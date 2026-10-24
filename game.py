@@ -49,24 +49,29 @@ class Game:
             return
         temporary = None
         try:
-            self.save_path.parent.mkdir(parents=True, exist_ok=True)
+            destination = (
+                self.save_path.resolve(strict=False)
+                if self.save_path.is_symlink()
+                else self.save_path
+            )
+            destination.parent.mkdir(parents=True, exist_ok=True)
             existing_mode = None
             try:
-                existing_mode = stat.S_IMODE(self.save_path.stat().st_mode)
+                existing_mode = stat.S_IMODE(destination.stat().st_mode)
             except FileNotFoundError:
                 pass
             with tempfile.NamedTemporaryFile(
                 mode="w",
                 encoding="utf-8",
-                dir=self.save_path.parent,
-                prefix=f".{self.save_path.name}.",
+                dir=destination.parent,
+                prefix=f".{destination.name}.",
                 delete=False,
             ) as file:
                 temporary = Path(file.name)
                 json.dump({"best": self.best}, file)
             if existing_mode is not None:
                 temporary.chmod(existing_mode)
-            temporary.replace(self.save_path)
+            temporary.replace(destination)
             self.save_error = False
             self.persisted_best = self.best
         except OSError:

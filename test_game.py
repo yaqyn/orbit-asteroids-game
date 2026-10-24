@@ -198,6 +198,18 @@ class GameTests(unittest.TestCase):
         self.game.save_best()
         self.assertEqual(self.game.save_path.stat().st_mode & 0o777, 0o640)
 
+    def test_score_updates_preserve_symlink_and_target_permissions(self):
+        target = self.game.save_path.with_name("shared-score.json")
+        target.write_text('{"best": 5}')
+        target.chmod(0o640)
+        self.game.save_path.unlink(missing_ok=True)
+        self.game.save_path.symlink_to(target.name)
+        self.game.score = 10
+        self.game.save_best()
+        self.assertTrue(self.game.save_path.is_symlink())
+        self.assertEqual(json.loads(target.read_text()), {"best": 10})
+        self.assertEqual(target.stat().st_mode & 0o777, 0o640)
+
     def test_render_all_states(self):
         renderer = Renderer()
         screen = pygame.display.get_surface()
