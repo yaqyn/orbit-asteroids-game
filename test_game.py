@@ -108,6 +108,15 @@ class GameTests(unittest.TestCase):
         self.assertEqual(self.game.state, "game_over")
         self.assertEqual(Game(self.game.save_path).best, 120)
 
+    def test_best_score_can_be_cleared_from_title(self):
+        self.game.save_path.write_text('{"best": 120}')
+        self.game = Game(self.game.save_path)
+        self.game.state = "title"
+        self.key(pygame.K_b)
+        self.assertEqual(self.game.best, 0)
+        self.assertFalse(self.game.save_path.exists())
+        self.assertEqual(self.game.notice, "Best score cleared")
+
     def test_single_collision_scores_once(self):
         asteroid = Asteroid(200, 200, 20)
         Shot(200, 200)

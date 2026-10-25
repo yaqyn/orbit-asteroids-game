@@ -93,6 +93,7 @@ rotation; a steady ring still shows protection. The best score is saved on game 
 `$XDG_STATE_HOME/asteroids/best.json` (default `~/.local/state/asteroids/best.json`).
 The legacy save location is retained so existing scores survive the Orbit rename.
 Use `--score-file PATH` for a portable or isolated best-score file.
+Press **B** on the title or game-over screen to clear the saved best score.
 Score saves use unique temporary files and atomic replacement; a failed replacement preserves the previous score and cleans up its temporary file. If saving fails, the best remains in memory and the menu shows a message.
 The game has no audio and does not require external media downloads.
 

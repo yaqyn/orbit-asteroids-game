@@ -346,7 +346,7 @@ class Renderer:
         )
         self.text(
             screen,
-            "P  pause    ESC  quit    /    Shield recharges after 6s without impact",
+            "P  pause    B  clear best on menu    ESC  quit    /    Shield recharges after 6s",
             (640, 610),
             MUTED,
             self.small_font,

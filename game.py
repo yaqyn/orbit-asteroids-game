@@ -83,6 +83,16 @@ class Game:
                 except OSError:
                     self.save_error = True
 
+    def reset_best(self):
+        """Clear the persisted score from non-playing screens."""
+        try:
+            self.save_path.unlink(missing_ok=True)
+            self.best = self.score if self.state == "playing" else 0
+            self.persisted_best = self.best
+            self.save_error = False
+        except OSError:
+            self.save_error = True
+
     def reset(self):
         self.asteroids, self.shots = pygame.sprite.Group(), pygame.sprite.Group()
         self.updatable, self.drawable = pygame.sprite.Group(), pygame.sprite.Group()
@@ -133,6 +143,10 @@ class Game:
             return False
         if event.key == pygame.K_m:
             self.toggle_reduced_motion()
+            return True
+        if event.key == pygame.K_b and self.state in {"title", "game_over"}:
+            self.reset_best()
+            self.notice, self.notice_timer = "Best score cleared", 2.5
             return True
         if self.state == "upgrade":
             if event.key in (pygame.K_1, pygame.K_2, pygame.K_3):
