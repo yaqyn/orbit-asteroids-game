@@ -141,6 +141,9 @@ class Game:
         if event.key == pygame.K_ESCAPE:
             self.save_best()
             return False
+        if event.key == pygame.K_q:
+            self.save_best()
+            return False
         if event.key == pygame.K_m:
             self.toggle_reduced_motion()
             return True

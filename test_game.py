@@ -88,6 +88,7 @@ class GameTests(unittest.TestCase):
         self.assertEqual(self.game.score, 0)
         self.assertEqual(self.game.lives, 3)
         self.assertFalse(self.key(pygame.K_ESCAPE))
+        self.assertFalse(self.key(pygame.K_q))
 
     def test_restart_from_pause_starts_a_fresh_run(self):
         self.game.score = 250
