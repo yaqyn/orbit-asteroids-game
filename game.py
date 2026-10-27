@@ -135,7 +135,7 @@ class Game:
         if event.type == pygame.QUIT:
             self.save_best()
             return False
-        if event.type == pygame.WINDOWFOCUSLOST and self.state == "playing":
+        if event.type in {pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED} and self.state == "playing":
             self.state = "paused"
         if event.type != pygame.KEYDOWN:
             return True
