@@ -20,6 +20,13 @@ def positive_int(value):
     return result
 
 
+def lives_count(value):
+    result = positive_int(value)
+    if result > 9:
+        raise argparse.ArgumentTypeError("must be between 1 and 9")
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         description="Pilot an upgradeable starfighter through a 3D-shaded asteroid field"
@@ -39,6 +46,7 @@ def main(argv=None):
     parser.add_argument(
         "--no-save", action="store_true", help="Keep best scores in memory only"
     )
+    parser.add_argument("--lives", type=lives_count, default=3, help="Starting hull lives (1-9)")
     parser.add_argument(
         "--score-file", type=Path, help="Use a custom best-score file"
     )
@@ -56,6 +64,7 @@ def main(argv=None):
             save_path=args.score_file,
             reduced_motion=args.reduced_motion,
             save_scores=not args.no_save,
+            starting_lives=args.lives,
         )
         if args.start:
             game.reset()

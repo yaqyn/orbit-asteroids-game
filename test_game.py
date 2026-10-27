@@ -15,10 +15,21 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
-from main import main
+from main import lives_count, main
 
 
 class GameTests(unittest.TestCase):
+    def test_starting_lives_can_be_configured_and_reset(self):
+        game = Game(save_scores=False, starting_lives=5)
+        self.assertEqual(game.lives, 5)
+        game.lives = 1
+        game.reset()
+        self.assertEqual(game.lives, 5)
+        self.assertEqual(lives_count("9"), 9)
+        for value in ["0", "10"]:
+            with self.assertRaises(Exception):
+                lives_count(value)
+
     def test_moving_salvage_is_collected_on_the_frame_it_reaches_the_ship(self):
         from progression import Salvage
 
