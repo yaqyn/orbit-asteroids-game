@@ -154,6 +154,10 @@ class GameTests(unittest.TestCase):
         self.game.handle_event(pygame.event.Event(pygame.WINDOWFOCUSLOST))
         self.assertEqual(self.game.state, "paused")
 
+    def test_minimizing_window_pauses(self):
+        self.game.handle_event(pygame.event.Event(pygame.WINDOWMINIMIZED))
+        self.assertEqual(self.game.state, "paused")
+
     def test_difficulty_and_delta_cap(self):
         self.game.elapsed = 100
         self.game.update(5)
