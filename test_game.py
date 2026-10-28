@@ -160,6 +160,14 @@ class GameTests(unittest.TestCase):
         self.assertAlmostEqual(self.game.elapsed, 100.05)
         self.assertGreater(self.game.field.difficulty, 1)
 
+    def test_asteroid_spawns_preserve_fractional_timer_remainder(self):
+        from constants import ASTEROID_SPAWN_RATE_SECONDS
+
+        self.game.field.spawn_timer = ASTEROID_SPAWN_RATE_SECONDS - 0.01
+        self.game.field.update(0.02)
+        self.assertAlmostEqual(self.game.field.spawn_timer, 0.01)
+        self.assertEqual(len(self.game.asteroids), 1)
+
     def test_reduced_motion(self):
         self.game.reduced_motion = True
         self.game.burst(pygame.Vector2(100, 100))
