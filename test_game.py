@@ -15,7 +15,7 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
-from main import lives_count, main
+from main import frame_rate, lives_count, main
 
 
 class GameTests(unittest.TestCase):
@@ -29,6 +29,13 @@ class GameTests(unittest.TestCase):
         for value in ["0", "10"]:
             with self.assertRaises(Exception):
                 lives_count(value)
+
+    def test_frame_rate_cap_is_bounded_and_runnable(self):
+        self.assertEqual(frame_rate("120"), 120)
+        for value in ["0", "241"]:
+            with self.assertRaises(Exception):
+                frame_rate(value)
+        self.assertEqual(main(["--start", "--frames", "1", "--fps", "120", "--no-save"]), 0)
 
     def test_moving_salvage_is_collected_on_the_frame_it_reaches_the_ship(self):
         from progression import Salvage

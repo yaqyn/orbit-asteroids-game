@@ -27,6 +27,13 @@ def lives_count(value):
     return result
 
 
+def frame_rate(value):
+    result = positive_int(value)
+    if result > 240:
+        raise argparse.ArgumentTypeError("must be between 1 and 240")
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         description="Pilot an upgradeable starfighter through a 3D-shaded asteroid field"
@@ -47,6 +54,7 @@ def main(argv=None):
         "--no-save", action="store_true", help="Keep best scores in memory only"
     )
     parser.add_argument("--lives", type=lives_count, default=3, help="Starting hull lives (1-9)")
+    parser.add_argument("--fps", type=frame_rate, default=60, help="Frame-rate cap (1-240)")
     parser.add_argument(
         "--score-file", type=Path, help="Use a custom best-score file"
     )
@@ -71,7 +79,7 @@ def main(argv=None):
         renderer = Renderer()
         running, frames = True, 0
         while running:
-            dt = clock.tick(60) / 1000
+            dt = clock.tick(args.fps) / 1000
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
                     display.toggle()
