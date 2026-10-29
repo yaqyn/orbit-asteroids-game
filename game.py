@@ -26,10 +26,11 @@ def score_path():
 
 
 class Game:
-    def __init__(self, save_path=None, reduced_motion=False, save_scores=True):
+    def __init__(self, save_path=None, reduced_motion=False, save_scores=True, starting_lives=PLAYER_LIVES):
         self.save_path = Path(save_path) if save_path is not None else score_path()
         self.reduced_motion = reduced_motion
         self.save_scores = save_scores
+        self.starting_lives = starting_lives
         self.best = self.load_best()
         self.persisted_best = self.best
         self.save_error = False
@@ -102,7 +103,7 @@ class Game:
         AsteroidField.containers = self.updatable
         self.player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         self.field = AsteroidField()
-        self.score, self.elapsed, self.lives = 0, 0, PLAYER_LIVES
+        self.score, self.elapsed, self.lives = 0, 0, self.starting_lives
         self.invulnerable = RESPAWN_SECONDS
         self.particles = []
         self.fx_rng = random.Random(710)

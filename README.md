@@ -37,6 +37,7 @@ cd orbit-asteroids-game
 ```
 
 Wait for first-run setup to finish, then press **Enter** on the Orbit title screen.
+Use `./launch --lives 5` for a longer practice run; accepted values are 1 through 9.
 Subsequent launches reuse the environment. Press **F11** for fullscreen and
 **Escape** to quit.
 
