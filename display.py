@@ -6,9 +6,9 @@ from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 
 
 class Display:
-    def __init__(self, fullscreen=False):
+    def __init__(self, fullscreen=False, window_size=(SCREEN_WIDTH, SCREEN_HEIGHT)):
         self.fullscreen = fullscreen
-        self.window_size = (SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.window_size = window_size
         self.scaled = None
         self.open()
         self.canvas = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT)).convert()

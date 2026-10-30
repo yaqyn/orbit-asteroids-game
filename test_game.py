@@ -15,10 +15,16 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
-from main import DIFFICULTIES, frame_rate, lives_count, main
+from main import DIFFICULTIES, frame_rate, lives_count, main, window_size
 
 
 class GameTests(unittest.TestCase):
+    def test_window_size_is_bounded_and_runnable(self):
+        self.assertEqual(window_size("1024x576"), (1024, 576))
+        for value in ["wide", "319x180", "7681x4320"]:
+            with self.assertRaises(Exception): window_size(value)
+        self.assertEqual(main(["--start", "--frames", "1", "--window-size", "1024x576", "--no-save"]), 0)
+
     def test_difficulty_preset_configures_asteroid_field(self):
         game = Game(save_scores=False, difficulty=DIFFICULTIES["intense"])
         self.assertEqual(game.field.difficulty, 1.35)

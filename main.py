@@ -36,11 +36,23 @@ def frame_rate(value):
     return result
 
 
+def window_size(value):
+    try:
+        width, height = (int(part) for part in value.lower().split("x", 1))
+    except (TypeError, ValueError):
+        raise argparse.ArgumentTypeError("must use WIDTHxHEIGHT") from None
+    if not (320 <= width <= 7680 and 180 <= height <= 4320):
+        raise argparse.ArgumentTypeError("must be between 320x180 and 7680x4320")
+    return width, height
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         description="Pilot an upgradeable starfighter through a 3D-shaded asteroid field"
     )
     parser.add_argument("--fullscreen", action="store_true")
+    parser.add_argument("--window-size", type=window_size, default=(1280, 720),
+                        metavar="WIDTHxHEIGHT", help="Initial resizable window size")
     parser.add_argument(
         "--reduced-motion",
         action="store_true",
@@ -68,7 +80,7 @@ def main(argv=None):
     pygame.display.init()
     pygame.font.init()
     try:
-        display = Display(args.fullscreen)
+        display = Display(args.fullscreen, args.window_size)
         screen = display.canvas
         pygame.display.set_caption("Orbit | Dodge / Split / Evolve")
         clock = pygame.time.Clock()
