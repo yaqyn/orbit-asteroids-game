@@ -12,6 +12,8 @@ from display import Display
 from game import Game
 from ui import Renderer
 
+DIFFICULTIES = {"relaxed": 0.75, "standard": 1.0, "intense": 1.35}
+
 
 def positive_int(value):
     result = int(value)
@@ -55,6 +57,8 @@ def main(argv=None):
     )
     parser.add_argument("--lives", type=lives_count, default=3, help="Starting hull lives (1-9)")
     parser.add_argument("--fps", type=frame_rate, default=60, help="Frame-rate cap (1-240)")
+    parser.add_argument("--difficulty", choices=DIFFICULTIES, default="standard",
+                        help="Asteroid speed and spawn-rate preset")
     parser.add_argument(
         "--score-file", type=Path, help="Use a custom best-score file"
     )
@@ -73,6 +77,7 @@ def main(argv=None):
             reduced_motion=args.reduced_motion,
             save_scores=not args.no_save,
             starting_lives=args.lives,
+            difficulty=DIFFICULTIES[args.difficulty],
         )
         if args.start:
             game.reset()

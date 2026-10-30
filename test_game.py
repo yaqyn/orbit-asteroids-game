@@ -15,10 +15,17 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
-from main import frame_rate, lives_count, main
+from main import DIFFICULTIES, frame_rate, lives_count, main
 
 
 class GameTests(unittest.TestCase):
+    def test_difficulty_preset_configures_asteroid_field(self):
+        game = Game(save_scores=False, difficulty=DIFFICULTIES["intense"])
+        self.assertEqual(game.field.difficulty, 1.35)
+        game.reset()
+        self.assertEqual(game.field.difficulty, 1.35)
+        self.assertEqual(main(["--start", "--frames", "1", "--difficulty", "relaxed", "--no-save"]), 0)
+
     def test_starting_lives_can_be_configured_and_reset(self):
         game = Game(save_scores=False, starting_lives=5)
         self.assertEqual(game.lives, 5)
