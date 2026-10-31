@@ -15,7 +15,7 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
-from main import DIFFICULTIES, fixed_delta, frame_rate, lives_count, main, window_size
+from main import DIFFICULTIES, fixed_delta, frame_rate, lives_count, main, prepare_game, window_size
 
 
 class GameTests(unittest.TestCase):
@@ -56,6 +56,13 @@ class GameTests(unittest.TestCase):
             with self.assertRaises(Exception):
                 fixed_delta(value)
         self.assertEqual(main(["--start", "--frames", "1", "--fixed-dt", "0.016", "--no-save"]), 0)
+
+    def test_run_can_start_paused(self):
+        game = Game(save_scores=False)
+        prepare_game(game, start_paused=True)
+        self.assertEqual(game.state, "paused")
+        self.assertEqual(game.score, 0)
+        self.assertEqual(main(["--start-paused", "--frames", "1", "--no-save"]), 0)
 
     def test_moving_salvage_is_collected_on_the_frame_it_reaches_the_ship(self):
         from progression import Salvage

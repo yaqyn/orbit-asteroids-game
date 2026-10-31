@@ -53,6 +53,13 @@ def window_size(value):
     return width, height
 
 
+def prepare_game(game, start=False, start_paused=False):
+    if start or start_paused:
+        game.reset()
+    if start_paused:
+        game.state = "paused"
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(
         description="Pilot an upgradeable starfighter through a 3D-shaded asteroid field"
@@ -70,7 +77,10 @@ def main(argv=None):
         "--frames", type=positive_int, help="Exit after N frames (verification)"
     )
     parser.add_argument("--screenshot", type=Path, help="Save the final rendered frame")
-    parser.add_argument("--start", action="store_true", help="Skip the title screen")
+    start_group = parser.add_mutually_exclusive_group()
+    start_group.add_argument("--start", action="store_true", help="Skip the title screen")
+    start_group.add_argument("--start-paused", action="store_true",
+                             help="Prepare a fresh run but wait at the pause screen")
     parser.add_argument(
         "--no-save", action="store_true", help="Keep best scores in memory only"
     )
@@ -100,8 +110,7 @@ def main(argv=None):
             starting_lives=args.lives,
             difficulty=DIFFICULTIES[args.difficulty],
         )
-        if args.start:
-            game.reset()
+        prepare_game(game, args.start, args.start_paused)
         renderer = Renderer()
         running, frames = True, 0
         while running:
