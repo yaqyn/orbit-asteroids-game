@@ -36,6 +36,13 @@ def frame_rate(value):
     return result
 
 
+def fixed_delta(value):
+    result = float(value)
+    if result <= 0 or result > 1:
+        raise argparse.ArgumentTypeError("must be greater than zero and at most one second")
+    return result
+
+
 def window_size(value):
     try:
         width, height = (int(part) for part in value.lower().split("x", 1))
@@ -69,6 +76,8 @@ def main(argv=None):
     )
     parser.add_argument("--lives", type=lives_count, default=3, help="Starting hull lives (1-9)")
     parser.add_argument("--fps", type=frame_rate, default=60, help="Frame-rate cap (1-240)")
+    parser.add_argument("--fixed-dt", type=fixed_delta,
+                        help="Use a fixed simulation step in seconds for deterministic verification")
     parser.add_argument("--difficulty", choices=DIFFICULTIES, default="standard",
                         help="Asteroid speed and spawn-rate preset")
     parser.add_argument(
@@ -96,7 +105,8 @@ def main(argv=None):
         renderer = Renderer()
         running, frames = True, 0
         while running:
-            dt = clock.tick(args.fps) / 1000
+            measured_dt = clock.tick(args.fps) / 1000
+            dt = args.fixed_dt if args.fixed_dt is not None else measured_dt
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
                     display.toggle()
