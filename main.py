@@ -36,6 +36,13 @@ def frame_rate(value):
     return result
 
 
+def fixed_delta(value):
+    result = float(value)
+    if result <= 0 or result > 1:
+        raise argparse.ArgumentTypeError("must be greater than zero and at most one second")
+    return result
+
+
 def window_size(value):
     try:
         width, height = (int(part) for part in value.lower().split("x", 1))
@@ -44,6 +51,13 @@ def window_size(value):
     if not (320 <= width <= 7680 and 180 <= height <= 4320):
         raise argparse.ArgumentTypeError("must be between 320x180 and 7680x4320")
     return width, height
+
+
+def prepare_game(game, start=False, start_paused=False):
+    if start or start_paused:
+        game.reset()
+    if start_paused:
+        game.state = "paused"
 
 
 def main(argv=None):
@@ -63,12 +77,17 @@ def main(argv=None):
         "--frames", type=positive_int, help="Exit after N frames (verification)"
     )
     parser.add_argument("--screenshot", type=Path, help="Save the final rendered frame")
-    parser.add_argument("--start", action="store_true", help="Skip the title screen")
+    start_group = parser.add_mutually_exclusive_group()
+    start_group.add_argument("--start", action="store_true", help="Skip the title screen")
+    start_group.add_argument("--start-paused", action="store_true",
+                             help="Prepare a fresh run but wait at the pause screen")
     parser.add_argument(
         "--no-save", action="store_true", help="Keep best scores in memory only"
     )
     parser.add_argument("--lives", type=lives_count, default=3, help="Starting hull lives (1-9)")
     parser.add_argument("--fps", type=frame_rate, default=60, help="Frame-rate cap (1-240)")
+    parser.add_argument("--fixed-dt", type=fixed_delta,
+                        help="Use a fixed simulation step in seconds for deterministic verification")
     parser.add_argument("--difficulty", choices=DIFFICULTIES, default="standard",
                         help="Asteroid speed and spawn-rate preset")
     parser.add_argument(
@@ -91,12 +110,12 @@ def main(argv=None):
             starting_lives=args.lives,
             difficulty=DIFFICULTIES[args.difficulty],
         )
-        if args.start:
-            game.reset()
+        prepare_game(game, args.start, args.start_paused)
         renderer = Renderer()
         running, frames = True, 0
         while running:
-            dt = clock.tick(args.fps) / 1000
+            measured_dt = clock.tick(args.fps) / 1000
+            dt = args.fixed_dt if args.fixed_dt is not None else measured_dt
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
                     display.toggle()
