@@ -1,5 +1,7 @@
 import os
 import json
+import contextlib
+import io
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
@@ -63,6 +65,14 @@ class GameTests(unittest.TestCase):
         self.assertEqual(game.state, "paused")
         self.assertEqual(game.score, 0)
         self.assertEqual(main(["--start-paused", "--frames", "1", "--no-save"]), 0)
+
+    def test_run_can_emit_a_machine_readable_summary(self):
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(main(["--start", "--frames", "1", "--fixed-dt", "0.02", "--no-save", "--summary-json"]), 0)
+        summary = json.loads(output.getvalue())
+        self.assertEqual(summary["frames"], 1)
+        self.assertEqual(summary["state"], "playing")
+        self.assertEqual(summary["elapsed_seconds"], 0.02)
 
     def test_moving_salvage_is_collected_on_the_frame_it_reaches_the_ship(self):
         from progression import Salvage

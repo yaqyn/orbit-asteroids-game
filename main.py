@@ -1,6 +1,7 @@
 """Keyboard-first arcade entry point with deterministic verification options."""
 
 import argparse
+import json
 import os
 import random
 from pathlib import Path
@@ -77,6 +78,8 @@ def main(argv=None):
         "--frames", type=positive_int, help="Exit after N frames (verification)"
     )
     parser.add_argument("--screenshot", type=Path, help="Save the final rendered frame")
+    parser.add_argument("--summary-json", action="store_true",
+                        help="Print a machine-readable run summary on exit")
     start_group = parser.add_mutually_exclusive_group()
     start_group.add_argument("--start", action="store_true", help="Skip the title screen")
     start_group.add_argument("--start-paused", action="store_true",
@@ -134,6 +137,15 @@ def main(argv=None):
             args.screenshot.parent.mkdir(parents=True, exist_ok=True)
             pygame.image.save(display.screen, str(args.screenshot))
         game.save_best()
+        if args.summary_json:
+            print(json.dumps({
+                "state": game.state,
+                "score": game.score,
+                "best": game.best,
+                "lives": game.lives,
+                "elapsed_seconds": round(game.elapsed, 6),
+                "frames": frames,
+            }, sort_keys=True))
         return 0
     finally:
         pygame.quit()
