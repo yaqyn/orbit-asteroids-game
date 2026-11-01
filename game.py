@@ -226,7 +226,7 @@ class Game:
         dt = min(max(dt, 0), 0.05)
         self.elapsed += dt
         self.invulnerable = max(0, self.invulnerable - dt)
-        self.field.difficulty = min(2.8, 1 + (self.level - 1) * 0.15)
+        self.field.difficulty = min(2.8, self.difficulty + (self.level - 1) * 0.15)
         for rock in self.asteroids:
             rock.reduced_motion = self.reduced_motion
         self.updatable.update(dt)

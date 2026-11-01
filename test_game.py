@@ -209,6 +209,15 @@ class GameTests(unittest.TestCase):
         self.assertAlmostEqual(self.game.elapsed, 100.05)
         self.assertGreater(self.game.field.difficulty, 1)
 
+    def test_difficulty_preset_persists_after_updates(self):
+        game = Game(save_scores=False, difficulty=0.75)
+        game.state = "playing"
+        game.update(0.01)
+        self.assertEqual(game.field.difficulty, 0.75)
+        game.elapsed = 40
+        game.update(0.01)
+        self.assertEqual(game.field.difficulty, 1.05)
+
     def test_asteroid_spawns_preserve_fractional_timer_remainder(self):
         from constants import ASTEROID_SPAWN_RATE_SECONDS
 
