@@ -44,6 +44,13 @@ def fixed_delta(value):
     return result
 
 
+def positive_seconds(value):
+    result = float(value)
+    if result <= 0 or result > 86400:
+        raise argparse.ArgumentTypeError("must be greater than zero and at most one day")
+    return result
+
+
 def window_size(value):
     try:
         width, height = (int(part) for part in value.lower().split("x", 1))
@@ -77,6 +84,8 @@ def main(argv=None):
     parser.add_argument(
         "--frames", type=positive_int, help="Exit after N frames (verification)"
     )
+    parser.add_argument("--max-seconds", type=positive_seconds,
+                        help="Exit after this much simulated play time")
     parser.add_argument("--screenshot", type=Path, help="Save the final rendered frame")
     parser.add_argument("--summary-json", action="store_true",
                         help="Print a machine-readable run summary on exit")
@@ -132,6 +141,8 @@ def main(argv=None):
             display.present()
             frames += 1
             if args.frames and frames >= args.frames:
+                break
+            if args.max_seconds and game.elapsed >= args.max_seconds:
                 break
         if args.screenshot:
             args.screenshot.parent.mkdir(parents=True, exist_ok=True)

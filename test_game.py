@@ -17,7 +17,7 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
-from main import DIFFICULTIES, fixed_delta, frame_rate, lives_count, main, prepare_game, window_size
+from main import DIFFICULTIES, fixed_delta, frame_rate, lives_count, main, positive_seconds, prepare_game, window_size
 
 
 class GameTests(unittest.TestCase):
@@ -73,6 +73,15 @@ class GameTests(unittest.TestCase):
         self.assertEqual(summary["frames"], 1)
         self.assertEqual(summary["state"], "playing")
         self.assertEqual(summary["elapsed_seconds"], 0.02)
+
+    def test_run_can_stop_after_simulated_time(self):
+        self.assertEqual(positive_seconds("0.04"), 0.04)
+        for value in ["0", "-1", "86401"]:
+            with self.assertRaises(Exception):
+                positive_seconds(value)
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(main(["--start", "--max-seconds", "0.04", "--fixed-dt", "0.02", "--no-save", "--summary-json"]), 0)
+        self.assertEqual(json.loads(output.getvalue())["frames"], 2)
 
     def test_moving_salvage_is_collected_on_the_frame_it_reaches_the_ship(self):
         from progression import Salvage
