@@ -26,12 +26,13 @@ def score_path():
 
 
 class Game:
-    def __init__(self, save_path=None, reduced_motion=False, save_scores=True, starting_lives=PLAYER_LIVES, difficulty=1.0):
+    def __init__(self, save_path=None, reduced_motion=False, save_scores=True, starting_lives=PLAYER_LIVES, difficulty=1.0, pause_on_focus_loss=True):
         self.save_path = Path(save_path) if save_path is not None else score_path()
         self.reduced_motion = reduced_motion
         self.save_scores = save_scores
         self.starting_lives = starting_lives
         self.difficulty = difficulty
+        self.pause_on_focus_loss = pause_on_focus_loss
         self.best = self.load_best()
         self.persisted_best = self.best
         self.save_error = False
@@ -137,7 +138,7 @@ class Game:
         if event.type == pygame.QUIT:
             self.save_best()
             return False
-        if event.type in {pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED} and self.state == "playing":
+        if self.pause_on_focus_loss and event.type in {pygame.WINDOWFOCUSLOST, pygame.WINDOWMINIMIZED} and self.state == "playing":
             self.state = "paused"
         if event.type != pygame.KEYDOWN:
             return True

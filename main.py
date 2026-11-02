@@ -80,6 +80,8 @@ def main(argv=None):
         action="store_true",
         help="Disable particles, star parallax, and asteroid rotation",
     )
+    parser.add_argument("--keep-playing-unfocused", action="store_true",
+                        help="Do not pause when the game window loses focus")
     parser.add_argument("--seed", type=int, help="Deterministic random seed")
     parser.add_argument(
         "--frames", type=positive_int, help="Exit after N frames (verification)"
@@ -121,6 +123,7 @@ def main(argv=None):
             save_scores=not args.no_save,
             starting_lives=args.lives,
             difficulty=DIFFICULTIES[args.difficulty],
+            pause_on_focus_loss=not args.keep_playing_unfocused,
         )
         prepare_game(game, args.start, args.start_paused)
         renderer = Renderer()

@@ -66,6 +66,13 @@ class GameTests(unittest.TestCase):
         self.assertEqual(game.score, 0)
         self.assertEqual(main(["--start-paused", "--frames", "1", "--no-save"]), 0)
 
+    def test_focus_pause_can_be_disabled_for_unattended_runs(self):
+        game = Game(save_scores=False, pause_on_focus_loss=False)
+        game.reset()
+        game.handle_event(pygame.event.Event(pygame.WINDOWFOCUSLOST))
+        self.assertEqual(game.state, "playing")
+        self.assertEqual(main(["--start", "--frames", "1", "--keep-playing-unfocused", "--no-save"]), 0)
+
     def test_run_can_emit_a_machine_readable_summary(self):
         with contextlib.redirect_stdout(io.StringIO()) as output:
             self.assertEqual(main(["--start", "--frames", "1", "--fixed-dt", "0.02", "--no-save", "--summary-json"]), 0)
