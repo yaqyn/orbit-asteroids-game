@@ -17,7 +17,7 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
-from main import DIFFICULTIES, fixed_delta, frame_rate, lives_count, main, positive_seconds, prepare_game, window_size
+from main import DIFFICULTIES, fixed_delta, frame_rate, lives_count, main, positive_seconds, prepare_game, shield_value, window_size
 
 
 class GameTests(unittest.TestCase):
@@ -44,6 +44,16 @@ class GameTests(unittest.TestCase):
         for value in ["0", "10"]:
             with self.assertRaises(Exception):
                 lives_count(value)
+
+    def test_starting_shield_can_be_configured_and_reset(self):
+        game = Game(save_scores=False, starting_shield=12)
+        self.assertEqual(game.shield, 12)
+        game.shield = 1
+        game.reset()
+        self.assertEqual(game.shield, 12)
+        self.assertEqual(shield_value("0"), 0)
+        with self.assertRaises(Exception):
+            shield_value("51")
 
     def test_frame_rate_cap_is_bounded_and_runnable(self):
         self.assertEqual(frame_rate("120"), 120)

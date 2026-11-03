@@ -26,11 +26,12 @@ def score_path():
 
 
 class Game:
-    def __init__(self, save_path=None, reduced_motion=False, save_scores=True, starting_lives=PLAYER_LIVES, difficulty=1.0, pause_on_focus_loss=True):
+    def __init__(self, save_path=None, reduced_motion=False, save_scores=True, starting_lives=PLAYER_LIVES, starting_shield=50, difficulty=1.0, pause_on_focus_loss=True):
         self.save_path = Path(save_path) if save_path is not None else score_path()
         self.reduced_motion = reduced_motion
         self.save_scores = save_scores
         self.starting_lives = starting_lives
+        self.starting_shield = starting_shield
         self.difficulty = difficulty
         self.pause_on_focus_loss = pause_on_focus_loss
         self.best = self.load_best()
@@ -119,7 +120,7 @@ class Game:
         self.modules = {key: 0 for key in UPGRADES}
         self.upgrade_choices = []
         self.shield_max = 50
-        self.shield = 50.0
+        self.shield = float(self.starting_shield)
         self.shield_delay = 0.0
         self.kills = 0
         self.combo = 0
