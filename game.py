@@ -26,12 +26,13 @@ def score_path():
 
 
 class Game:
-    def __init__(self, save_path=None, reduced_motion=False, save_scores=True, starting_lives=PLAYER_LIVES, starting_shield=50, difficulty=1.0, pause_on_focus_loss=True):
+    def __init__(self, save_path=None, reduced_motion=False, save_scores=True, starting_lives=PLAYER_LIVES, starting_shield=50, respawn_grace=RESPAWN_SECONDS, difficulty=1.0, pause_on_focus_loss=True):
         self.save_path = Path(save_path) if save_path is not None else score_path()
         self.reduced_motion = reduced_motion
         self.save_scores = save_scores
         self.starting_lives = starting_lives
         self.starting_shield = starting_shield
+        self.respawn_grace = respawn_grace
         self.difficulty = difficulty
         self.pause_on_focus_loss = pause_on_focus_loss
         self.best = self.load_best()
@@ -108,7 +109,7 @@ class Game:
         self.field = AsteroidField()
         self.field.difficulty = self.difficulty
         self.score, self.elapsed, self.lives = 0, 0, self.starting_lives
-        self.invulnerable = RESPAWN_SECONDS
+        self.invulnerable = self.respawn_grace
         self.particles = []
         self.fx_rng = random.Random(710)
         self.exhaust_timer = 0.0
@@ -220,7 +221,7 @@ class Game:
             self.player.position.update(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
             self.player.rotation = 180
             self.player.velocity.update(0, 0)
-            self.invulnerable = RESPAWN_SECONDS
+            self.invulnerable = self.respawn_grace
 
     def update(self, dt):
         if self.state != "playing":

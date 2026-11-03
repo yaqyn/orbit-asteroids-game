@@ -44,6 +44,13 @@ def shield_value(value):
     return result
 
 
+def respawn_seconds(value):
+    result = float(value)
+    if result < 0 or result > 10:
+        raise argparse.ArgumentTypeError("must be between zero and ten seconds")
+    return result
+
+
 def fixed_delta(value):
     result = float(value)
     if result <= 0 or result > 1:
@@ -107,6 +114,8 @@ def main(argv=None):
     )
     parser.add_argument("--lives", type=lives_count, default=3, help="Starting hull lives (1-9)")
     parser.add_argument("--shield", type=shield_value, default=50, help="Starting shield charge (0-50)")
+    parser.add_argument("--respawn-grace", type=respawn_seconds, default=2.0,
+                        help="Collision immunity after spawning or taking a life (0-10 seconds)")
     parser.add_argument("--fps", type=frame_rate, default=60, help="Frame-rate cap (1-240)")
     parser.add_argument("--fixed-dt", type=fixed_delta,
                         help="Use a fixed simulation step in seconds for deterministic verification")
@@ -131,6 +140,7 @@ def main(argv=None):
             save_scores=not args.no_save,
             starting_lives=args.lives,
             starting_shield=args.shield,
+            respawn_grace=args.respawn_grace,
             difficulty=DIFFICULTIES[args.difficulty],
             pause_on_focus_loss=not args.keep_playing_unfocused,
         )

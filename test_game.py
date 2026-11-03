@@ -17,7 +17,7 @@ from constants import SCREEN_WIDTH
 from game import Game, score_path
 from shot import Shot
 from ui import Renderer
-from main import DIFFICULTIES, fixed_delta, frame_rate, lives_count, main, positive_seconds, prepare_game, shield_value, window_size
+from main import DIFFICULTIES, fixed_delta, frame_rate, lives_count, main, positive_seconds, prepare_game, respawn_seconds, shield_value, window_size
 
 
 class GameTests(unittest.TestCase):
@@ -54,6 +54,16 @@ class GameTests(unittest.TestCase):
         self.assertEqual(shield_value("0"), 0)
         with self.assertRaises(Exception):
             shield_value("51")
+
+    def test_respawn_grace_can_be_configured(self):
+        game = Game(save_scores=False, respawn_grace=4.5)
+        self.assertEqual(game.invulnerable, 4.5)
+        game.invulnerable = 0
+        game.reset()
+        self.assertEqual(game.invulnerable, 4.5)
+        self.assertEqual(respawn_seconds("0"), 0)
+        with self.assertRaises(Exception):
+            respawn_seconds("11")
 
     def test_frame_rate_cap_is_bounded_and_runnable(self):
         self.assertEqual(frame_rate("120"), 120)
