@@ -105,6 +105,8 @@ def main(argv=None):
     parser.add_argument("--screenshot", type=Path, help="Save the final rendered frame")
     parser.add_argument("--summary-json", action="store_true",
                         help="Print a machine-readable run summary on exit")
+    parser.add_argument("--summary-file", type=Path,
+                        help="Write the machine-readable run summary to a file")
     start_group = parser.add_mutually_exclusive_group()
     start_group.add_argument("--start", action="store_true", help="Skip the title screen")
     start_group.add_argument("--start-paused", action="store_true",
@@ -170,15 +172,19 @@ def main(argv=None):
             args.screenshot.parent.mkdir(parents=True, exist_ok=True)
             pygame.image.save(display.screen, str(args.screenshot))
         game.save_best()
-        if args.summary_json:
-            print(json.dumps({
+        summary = {
                 "state": game.state,
                 "score": game.score,
                 "best": game.best,
                 "lives": game.lives,
                 "elapsed_seconds": round(game.elapsed, 6),
                 "frames": frames,
-            }, sort_keys=True))
+            }
+        if args.summary_json:
+            print(json.dumps(summary, sort_keys=True))
+        if args.summary_file:
+            args.summary_file.parent.mkdir(parents=True, exist_ok=True)
+            args.summary_file.write_text(json.dumps(summary, sort_keys=True) + "\n", encoding="utf-8")
         return 0
     finally:
         pygame.quit()

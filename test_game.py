@@ -101,6 +101,14 @@ class GameTests(unittest.TestCase):
         self.assertEqual(summary["state"], "playing")
         self.assertEqual(summary["elapsed_seconds"], 0.02)
 
+    def test_run_can_write_a_machine_readable_summary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "reports" / "orbit.json"
+            self.assertEqual(main(["--start", "--frames", "1", "--no-save", "--summary-file", str(path)]), 0)
+            summary = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(summary["frames"], 1)
+        self.assertEqual(summary["state"], "playing")
+
     def test_run_can_stop_after_simulated_time(self):
         self.assertEqual(positive_seconds("0.04"), 0.04)
         for value in ["0", "-1", "86401"]:
