@@ -109,6 +109,13 @@ class GameTests(unittest.TestCase):
         self.assertEqual(summary["frames"], 1)
         self.assertEqual(summary["state"], "playing")
 
+    def test_unattended_run_can_stop_on_game_over(self):
+        with patch.object(Game, "update", lambda game, dt: setattr(game, "state", "game_over")):
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(main(["--start", "--frames", "10", "--stop-on-game-over", "--no-save", "--summary-json"]), 0)
+        self.assertEqual(json.loads(output.getvalue())["frames"], 1)
+
     def test_run_can_stop_after_simulated_time(self):
         self.assertEqual(positive_seconds("0.04"), 0.04)
         for value in ["0", "-1", "86401"]:

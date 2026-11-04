@@ -102,6 +102,8 @@ def main(argv=None):
     )
     parser.add_argument("--max-seconds", type=positive_seconds,
                         help="Exit after this much simulated play time")
+    parser.add_argument("--stop-on-game-over", action="store_true",
+                        help="Exit an unattended run when the game ends")
     parser.add_argument("--screenshot", type=Path, help="Save the final rendered frame")
     parser.add_argument("--summary-json", action="store_true",
                         help="Print a machine-readable run summary on exit")
@@ -167,6 +169,8 @@ def main(argv=None):
             if args.frames and frames >= args.frames:
                 break
             if args.max_seconds and game.elapsed >= args.max_seconds:
+                break
+            if args.stop_on_game_over and game.state == "game_over":
                 break
         if args.screenshot:
             args.screenshot.parent.mkdir(parents=True, exist_ok=True)
