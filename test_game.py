@@ -116,6 +116,13 @@ class GameTests(unittest.TestCase):
                 self.assertEqual(main(["--start", "--frames", "10", "--stop-on-game-over", "--no-save", "--summary-json"]), 0)
         self.assertEqual(json.loads(output.getvalue())["frames"], 1)
 
+    def test_game_over_can_fail_an_unattended_check_after_reporting(self):
+        with patch.object(Game, "update", lambda game, dt: setattr(game, "state", "game_over")):
+            with contextlib.redirect_stdout(io.StringIO()) as output:
+                result = main(["--start", "--frames", "1", "--fail-on-game-over", "--no-save", "--summary-json"])
+        self.assertEqual(result, 1)
+        self.assertEqual(json.loads(output.getvalue())["state"], "game_over")
+
     def test_unattended_run_can_stop_at_a_score_target(self):
         def score_each_frame(game, dt):
             game.score += 2

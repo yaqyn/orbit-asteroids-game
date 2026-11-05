@@ -104,6 +104,8 @@ def main(argv=None):
                         help="Exit after this much simulated play time")
     parser.add_argument("--stop-on-game-over", action="store_true",
                         help="Exit an unattended run when the game ends")
+    parser.add_argument("--fail-on-game-over", action="store_true",
+                        help="Return a failure status after reporting a game over")
     parser.add_argument("--max-score", type=positive_int,
                         help="Exit an unattended run after reaching this score")
     parser.add_argument("--screenshot", type=Path, help="Save the final rendered frame")
@@ -193,7 +195,7 @@ def main(argv=None):
         if args.summary_file:
             args.summary_file.parent.mkdir(parents=True, exist_ok=True)
             args.summary_file.write_text(json.dumps(summary, sort_keys=True) + "\n", encoding="utf-8")
-        return 0
+        return 1 if args.fail_on_game_over and game.state == "game_over" else 0
     finally:
         pygame.quit()
 
